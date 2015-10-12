@@ -1,0 +1,13 @@
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+PIAB_DIR:=$(shell dirname $(ROOT_DIR))
+
+.PHONY: livecd
+livecd: piab.nix
+	nix-build -E '(import ../nixpkgs/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
+	ln -fs $$(cat ./result/nix-support/hydra-build-products | awk '{print $$NF}') ./piab-live.iso
+
+.PHONY: piab.nix
+piab.nix: ../.git/refs/heads/master
+	cat ./piab.nix.template > ./piab.nix
+	sed -i 's|@piab_path@|${PIAB_DIR}|' ./piab.nix
+	sed -i 's|@piab_hash@|'$$(nix-prefetch-git --deepClone --fetch-submodules file://${PIAB_DIR} refs/heads/master | tail -n 1)'|' ./piab.nix

@@ -1,8 +1,11 @@
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 all: run_tests
 
 update: fetch_upstream fetch_patches
 
-run_tests:
+tests:
+	$(MAKE) -C ./tests
 
 fetch_upstream:
 	./fetch_upstream.py
@@ -10,8 +13,6 @@ fetch_upstream:
 fetch_patches:
 	./fetch_patches.py
 
-#livecd:
-#	nix-build -A iso_piab.x86_64-linux -o livecd ./nixpkgs/nixos/release.nix
-
+.PHONY: livecd
 livecd:
-	nix-build -E '(import ./nixpkgs/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o livecd
+	$(MAKE) -C ./livecd
