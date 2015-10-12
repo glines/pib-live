@@ -1,0 +1,4 @@
+# Ignore generated files
+result
+piab.nix
+piab-live.iso
