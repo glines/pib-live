@@ -1,0 +1,5 @@
+[submodule "nixpkgs"]
+  path = nixpkgs
+  url = /home/auntieneo/code/piab/nixpkgs
+#  url = /home/auntieneo/code/nixpkgs
+#  url = https://github.com/NixOS/nixpkgs.git
