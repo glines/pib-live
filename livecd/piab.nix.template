@@ -1,7 +1,7 @@
-{ stdenv, fetchgit, nix }:
+{ lib, stdenv, fetchgit, pkgs }:
 
 stdenv.mkDerivation rec {
-  name = "piab-${version}";
+  name = "piab-git";
   version = "git";
 
   src = fetchgit {
@@ -10,10 +10,10 @@ stdenv.mkDerivation rec {
     sha256 = "@piab_hash@";
   };
 
-  buildInputs = [ nix ];
-
-	buildPhase = ''
-    make tests
+	buildPhase =
+  with (import ../tests/piglits.nix { inherit lib; inherit pkgs; });
+  ''
+    ln -s ${piglits.mesa_arb_shader_subroutine} ./tests/piglits/mesa_arb_shader_subroutine
 	'';
 
   installPhase = ''
