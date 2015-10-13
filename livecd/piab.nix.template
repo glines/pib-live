@@ -1,4 +1,4 @@
-{ stdenv, fetchgit }:
+{ stdenv, fetchgit, nix }:
 
 stdenv.mkDerivation rec {
   name = "piab-${version}";
@@ -10,7 +10,10 @@ stdenv.mkDerivation rec {
     sha256 = "@piab_hash@";
   };
 
+  buildInputs = [ nix ];
+
 	buildPhase = ''
+    make tests
 	'';
 
   installPhase = ''

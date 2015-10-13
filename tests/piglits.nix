@@ -20,7 +20,7 @@ let
   };
 
   mesa_nir-cse-hash-v2 = pkgs.fetchgit {
-    url = "git://people.freedesktop.org/~cwabbott/mesa";
+    url = "git://people.freedesktop.org/~cwabbott0/mesa";
     rev = "f9be7219ea246e338d121f874736d26a9a78ca5e";
     sha256 = "f5d885e292f36b0c524fd8b0355a1e0d765481bb6e23e51c6bca2558ee4f1027";
   };

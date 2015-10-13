@@ -15,8 +15,10 @@ with import ../tests/piglits.nix { inherit lib; inherit pkgs; };
 
   environment.systemPackages =
     [
+      pkgs.gnumake
+
       # Include some piglit tests
-      piglits.mesa_nir-cse-hash-v2  # XXX
+#      piglits.mesa_nir-cse-hash-v2  # XXX
     ];
 
   # Provide networkmanager for easy wireless configuration.
@@ -32,15 +34,29 @@ with import ../tests/piglits.nix { inherit lib; inherit pkgs; };
     # Auto-login as root.
     displayManager.auto.enable = true;
     displayManager.auto.user = "root";
+    displayManager.sessionCommands = ''
+        # We probably just booted, so we need to wait a bit for the network
+        ${pkgs.xterm}/bin/xterm -bg black -fg white -hold -e 'sleep 10 && cd /root/piab && ${pkgs.gnumake}/bin/make tests' &
+        waitPID=$!
+    '';
 
-    displayManager.session = singleton
-      { name = "xterm";
-        manage = "desktop";
-        start = ''
-          ${pkgs.xterm}/bin/xterm -hold -e '${piglits.mesa_nir-cse-hash-v2}/bin/piglit run ${piglits.mesa_nir-cse-hash-v2}/lib/piglit/tests/quick.py /tmp' &
-          waitPID=$!
-        '';
-      };
+    desktopManager.default = mkForce "none";
+
+    windowManager = {
+      # We just want to fill the screen with a terminal; no nonsense.
+      # Honestly I don't even know how to use ratpoison.
+      ratpoison.enable = true;
+      default = "ratpoison";
+    };
+
+#    displayManager.session = singleton
+#      { name = "xterm-piab";
+#        manage = "desktop";
+#        start = ''
+#          ${pkgs.xterm}/bin/xterm -hold -e 'cd /root/piab && ${pkgs.gnumake}/bin/make tests' &
+#          waitPID=$!
+#        '';
+#      };
   };
 
 
