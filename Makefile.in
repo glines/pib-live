@@ -1,5 +1,10 @@
 # @configure_input@
 
+package = @PACKAGE_NAME@
+version = @PACKAGE_VERSION@
+tarname = @PACKAGE_TARNAME@
+distdir = $(tarname)-$(version)
+
 # VPATH variables for building outside of the source tree
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -7,6 +12,30 @@ VPATH = @srcdir@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: tests
+
+dist: $(distdir).tar.gz
+
+$(distdir).tar.gz: $(distdir)
+	tar -cvzf $@ $(distdir)
+	rm -rf $(distdir)
+
+$(distdir): CLEAN_DIST
+	mkdir -p $(distdir)
+	cp $(srcdir)/configure.ac $(distdir)
+	cp $(srcdir)/configure $(distdir)
+	cp $(srcdir)/Makefile.in $(distdir)
+	mkdir -p $(distdir)/tests
+	cp $(srcdir)/tests/Makefile.in $(distdir)/tests/
+	cp $(srcdir)/tests/*.nix $(distdir)/tests/
+	mkdir -p $(distdir)/livecd
+	cp $(srcdir)/livecd/Makefile.in $(distdir)/livecd/
+	cp $(srcdir)/livecd/piab-livecd.nix $(distdir)/livecd/
+	cp $(srcdir)/livecd/piab.nix.template $(distdir)/livecd/
+
+.PHONY: CLEAN_DIST
+CLEAN_DIST:
+	-rm $(distdir).tar.gz >/dev/null 2>&1
+	-rm -rf $(distdir) >/dev/null 2>&1
 
 .PHONY: tests
 tests:
