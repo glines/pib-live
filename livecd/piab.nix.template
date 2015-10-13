@@ -10,6 +10,9 @@ stdenv.mkDerivation rec {
     sha256 = "@piab_hash@";
   };
 
+	buildPhase = ''
+	'';
+
   installPhase = ''
     mkdir "$out"
     cp -R ./* "$out"/

@@ -5,7 +5,7 @@
 
 with lib;
 
-with import ../piglits.nix { inherit lib; inherit pkgs; };
+with import ../tests/piglits.nix { inherit lib; inherit pkgs; };
 
 {
   imports = [ ../nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
@@ -16,7 +16,7 @@ with import ../piglits.nix { inherit lib; inherit pkgs; };
   environment.systemPackages =
     [
       # Include some piglit tests
-      piglits.mesa_nir-cse-hash-v2
+      piglits.mesa_nir-cse-hash-v2  # XXX
     ];
 
   # Provide networkmanager for easy wireless configuration.
