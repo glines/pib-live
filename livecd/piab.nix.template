@@ -1,20 +1,22 @@
-{ lib, stdenv, fetchgit, pkgs }:
+{ lib, stdenv, fetchurl, pkgs }:
 
 stdenv.mkDerivation rec {
-  name = "piab-git";
-  version = "git";
+  name = "piab-${version}";
+  version = "@piab_version@";
 
-  src = fetchgit {
+  src = fetchurl {
     url = "file://@piab_path@";
-    rev = "refs/heads/master";
     sha256 = "@piab_hash@";
   };
 
-	buildPhase =
-  with (import ../tests/piglits.nix { inherit lib; inherit pkgs; });
+  buildPhase =
+  with (import @piab_srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; });
   ''
+    # We build a few select piglit tests, mostly for convenience. The livecd user
+    # will most likely build their own tests.
+    mkdir -p ./tests/piglits
     ln -s ${piglits.mesa_arb_shader_subroutine} ./tests/piglits/mesa_arb_shader_subroutine
-	'';
+  '';
 
   installPhase = ''
     mkdir "$out"

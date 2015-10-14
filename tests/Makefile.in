@@ -1,5 +1,10 @@
 # @configure_input@
 
+package = @PACKAGE_NAME@
+version = @PACKAGE_VERSION@
+tarname = @PACKAGE_TARNAME@
+distdir = $(tarname)-$(version)
+
 # VPATH variables for building outside of the source tree
 srcdir = @srcdir@
 VPATH = @srcdir@

@@ -5,10 +5,10 @@
 
 with lib;
 
-with import ../tests/piglits.nix { inherit lib; inherit pkgs; };
+with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
 
 {
-  imports = [ ../nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
+  imports = [ @srcdir@/../nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
 
   # Provide wicd for easy wireless configuration.
   #networking.wicd.enable = true;
@@ -61,7 +61,7 @@ with import ../tests/piglits.nix { inherit lib; inherit pkgs; };
 
 
   system.activationScripts.includePIAB = let
-    piab = pkgs.callPackage ./piab.nix { };
+    piab = pkgs.callPackage @builddir@/piab.nix { };
   in ''
     ln -s ${piab} /root/piab
   '';
