@@ -34,9 +34,19 @@ with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
     # Auto-login as root.
     displayManager.auto.enable = true;
     displayManager.auto.user = "root";
-    displayManager.sessionCommands = ''
+    displayManager.sessionCommands =
+    let
+      start_piab = builtins.toFile "start_piab.sh" ''
+	#!/usr/bin/env sh
         # We probably just booted, so we need to wait a bit for the network
-        ${pkgs.xterm}/bin/xterm -bg black -fg white -hold -e 'sleep 10 && cd /root/piab && ${pkgs.gnumake}/bin/make tests' &
+        echo "Waiting for the network..."
+	sleep 10 &&
+	mkdir -p /root/piab-build && cd /root/piab-build &&
+	../piab/configure && /usr/bin/env make tests
+      '';
+    in
+    ''
+        ${pkgs.xterm}/bin/xterm -bg black -fg white -hold -e 'sh ${start_piab}' &
         waitPID=$!
     '';
 

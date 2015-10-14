@@ -20,9 +20,10 @@ build_tests: $(piglit_builds)
 run_tests: $(piglit_results)
 
 $(piglit_builds):
+	mkdir -p $(shell dirname $@)
 	nix-build -A piglits.$(@F) $(srcdir)/piglits.nix -o $@
 
 .SECONDEXPANSION:
 $(piglit_results): piglits/$$(shell basename $$@)
-	mkdir $@
+	mkdir -p $@
 	$</bin/piglit run $</lib/piglit/tests/quick.py ./results/$(@F)/
