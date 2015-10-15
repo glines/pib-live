@@ -24,6 +24,11 @@ $(distdir): CLEAN_DIST
 	cp $(srcdir)/configure.ac $(distdir)
 	cp $(srcdir)/configure $(distdir)
 	cp $(srcdir)/Makefile.in $(distdir)
+	mkdir -p $(distdir)/pkgs/piglit
+	cp $(srcdir)/pkgs/piglit/default.nix $(distdir)/pkgs/piglit/
+	cp $(srcdir)/pkgs/piglit/hack-for-wrapper.patch $(distdir)/pkgs/piglit/
+	mkdir -p $(distdir)/pkgs/waffle
+	cp $(srcdir)/pkgs/waffle/default.nix $(distdir)/pkgs/waffle/
 	mkdir -p $(distdir)/tests
 	cp $(srcdir)/tests/Makefile.in $(distdir)/tests/
 	cp $(srcdir)/tests/*.nix $(distdir)/tests/
