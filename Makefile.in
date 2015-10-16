@@ -24,6 +24,7 @@ $(distdir): CLEAN_DIST
 	cp $(srcdir)/configure.ac $(distdir)
 	cp $(srcdir)/configure $(distdir)
 	cp $(srcdir)/Makefile.in $(distdir)
+	cp $(srcdir)/setup.py $(distdir)
 	mkdir -p $(distdir)/pkgs/piglit
 	cp $(srcdir)/pkgs/piglit/default.nix $(distdir)/pkgs/piglit/
 	cp $(srcdir)/pkgs/piglit/hack-for-wrapper.patch $(distdir)/pkgs/piglit/
@@ -37,6 +38,8 @@ $(distdir): CLEAN_DIST
 	cp $(srcdir)/livecd/piab-livecd.nix.in $(distdir)/livecd/
 	cp $(srcdir)/livecd/piab.nix.template $(distdir)/livecd/
 	cp -R $(srcdir)/nixpkgs $(distdir)/  # FIXME: We should fetch this from GitHub
+	mkdir -p $(distdir)/tui
+	cp -R $(srcdir)/tui/*.py $(distdir)/tui/
 
 .PHONY: CLEAN_DIST
 CLEAN_DIST:
