@@ -13,7 +13,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PIAB_DIR:=$(shell dirname $(ROOT_DIR))
 
 .PHONY: livecd
-livecd: piab.nix
+livecd: piab.nix update_repos
 	nix-build -E --show-trace '(import $(srcdir)/../nixpkgs/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
 	ln -fs $$(cat ./result/nix-support/hydra-build-products | awk '{print $$NF}') ./piab-live.iso
 
@@ -24,3 +24,7 @@ piab.nix: ../$(distdir).tar.gz
 	sed -i 's|@piab_hash@|'$$(nix-prefetch-url file://@abs_top_builddir@/$(shell basename $<))'|' ./piab.nix
 	sed -i 's|@piab_version@|@PACKAGE_VERSION@|' ./piab.nix
 	sed -i 's|@piab_srcdir@|@srcdir@|' ./piab.nix
+
+.PHONY:
+update_repos:
+	$(MAKE) -C ./repos

@@ -1,0 +1,36 @@
+# @configure_input@
+
+package = @PACKAGE_NAME@
+version = @PACKAGE_VERSION@
+tarname = @PACKAGE_TARNAME@
+distdir = $(tarname)-$(version)
+
+# VPATH variables for building outside of the source tree
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+repos = mesa piglit
+repo_tarballs = $(patsubst %,%.tar.gz,$(repos))
+repo_updates = $(patsubst %,%_update,$(repos))
+
+repos: $(repo_tarballs)
+
+$(repos):
+	# Simply create the empty repo; we fetch it later with 'git fetch --all'
+	mkdir -p $@
+	git init --bare $@
+
+.PHONY: $(repo_updates)
+.SECONDEXPANSION:
+$(repo_updates): $$(shell echo $$@ | sed 's/_update//')
+	-IFS=$$'\n'; cd $< && \
+	    for remote in $$(cat ../$(srcdir)/$<_remotes.txt); do \
+		name=$$(echo $$remote | cut -d' ' -f1); \
+		url=$$(echo $$remote | cut -d' ' -f2); \
+	        git remote add $$name $$url; done
+	cd $< && git fetch --all
+
+.PHONY: $(repo_tarballs)
+.SECONDEXPANSION:
+$(repo_tarballs): $$(shell basename -s .tar.gz $$@) $$(shell basename -s .tar.gz $$@)_update
+	tar -cvzf $@ $<

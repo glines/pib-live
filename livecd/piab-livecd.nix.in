@@ -7,6 +7,9 @@ with lib;
 
 with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
 
+let
+  tarball_name = "@PACKAGE_NAME@-@PACKAGE_VERSION@";
+in
 {
   imports = [ @srcdir@/../nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
 
@@ -15,6 +18,7 @@ with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
 
   environment.systemPackages =
     [
+      pkgs.git
       pkgs.gnumake
 
       # Include some piglit tests
@@ -41,6 +45,8 @@ with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
         # We probably just booted, so we need to wait a bit for the network
         echo "Waiting for the network..."
         sleep 10 &&
+        tar xzf /iso/mesa.tar.gz &&
+        tar xzf /iso/piglit.tar.gz &&
         ./piab/tui/piab-tui.py
 #        mkdir -p /root/piab-build && cd /root/piab-build &&
 #        ../piab/configure && /usr/bin/env make tests
@@ -59,23 +65,25 @@ with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
       ratpoison.enable = true;
       default = "ratpoison";
     };
-
-#    displayManager.session = singleton
-#      { name = "xterm-piab";
-#        manage = "desktop";
-#        start = ''
-#          ${pkgs.xterm}/bin/xterm -hold -e 'cd /root/piab && ${pkgs.gnumake}/bin/make tests' &
-#          waitPID=$!
-#        '';
-#      };
   };
-
 
   system.activationScripts.includePIAB = let
     piab = pkgs.callPackage @builddir@/piab.nix { };
-  in ''
+  in stringAfter [ "users" ]
+  ''
     ln -s ${piab} /root/piab
   '';
+
+  # Add some git repositories to the livecd to reduce the burden on the servers
+  isoImage.contents =
+    [
+      { source = "@abs_builddir@/repos/mesa.tar.gz";
+        target = "/mesa.tar.gz";
+      }
+      { source = "@abs_builddir@/repos/piglit.tar.gz";
+        target = "/piglit.tar.gz";
+      }
+    ];
 
 #  system.activationScripts.installerDesktop = let
 #    openManual = pkgs.writeScript "nixos-manual.sh" ''
