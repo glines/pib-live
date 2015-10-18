@@ -21,6 +21,10 @@ class OptionTreeWidget(urwid.TreeWidget):
     def get_display_text(self):
         return self.get_node().get_display_text()
 
+    def selectable(self):
+        # All OptionTreeWidget's are selectable
+        return True
+
     def collapse(self):
         self.expanded = False
         self.update_expanded_icon()
