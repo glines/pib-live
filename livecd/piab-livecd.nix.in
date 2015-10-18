@@ -45,10 +45,11 @@ in
         # We probably just booted, so we need to wait a bit for the network
         echo "Waiting for the network..."
         sleep 10 &&
-        tar xzf /iso/mesa.tar.gz &&
-        tar xzf /iso/piglit.tar.gz &&
+        mkdir repos
+        tar xzf /iso/mesa.tar.gz -C repos/ &&
+        tar xzf /iso/piglit.tar.gz -C repos/ &&
         ./piab/tui/piab-tui.py
-#        mkdir -p /root/piab-build && cd /root/piab-build &&
+#        mkdir piab-build && cd piab-build &&
 #        ../piab/configure && /usr/bin/env make tests
       '';
     in

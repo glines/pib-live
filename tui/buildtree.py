@@ -4,9 +4,37 @@ class BuildTreeWidget(urwid.TreeWidget):
     def get_display_text(self):
         return str(self.get_node().get_value()['text'])
 
+    def selectable(self):
+        # All nodes are selectable
+        return True
+
+    def get_indented_widget(self):
+        widget = self.get_inner_widget()
+        # Apply indentation padding first; the check boxes appear on the far
+        # left, as in Linux's "menuconfig" that many people are familiar with
+        indent_cols = self.get_indent_cols()
+        widget = urwid.Padding(widget, width=('relative', 100), left=indent_cols)
+        if self.is_leaf:
+            # Leaf nodes have square brackets
+            widget = urwid.Columns([('fixed', 3, urwid.SelectableIcon(u'[ ]')), widget], dividechars=1)
+        else:
+            # Non-leaf nodes have angle brackets to suggest a hierarchy
+            widget = urwid.Columns([('fixed', 3, urwid.SelectableIcon(u'< >')), widget], dividechars=1)
+        return widget
+
+class BuildNodeWidget(BuildTreeWidget):
+    # FIXME: Rename these to unselected_icon and selected_icon
+    unexpanded_icon = urwid.SelectableIcon('[ ]', 0)
+    expanded_icon = urwid.SelectableIcon('[*]', 0)
+
+class BuildParentNodeWidget(BuildTreeWidget):
+    # FIXME: Rename these to unselected_icon and selected_icon
+    unexpanded_icon = urwid.SelectableIcon('< >', 0)
+    expanded_icon = urwid.SelectableIcon('<*>', 0)
+
 class BuildNode(urwid.TreeNode):
     def load_widget(self):
-        return BuildTreeWidget(self)
+        return BuildNodeWidget(self)
 
 class BuildParentNode(urwid.ParentNode):
     def __init__(self, *args, **kwargs):
@@ -17,7 +45,7 @@ class BuildParentNode(urwid.ParentNode):
         return str(self.get_node().get_value())
 
     def load_widget(self):
-        return BuildTreeWidget(self)
+        return BuildParentNodeWidget(self)
 
     def load_child_keys(self):
         data = self.get_value()
