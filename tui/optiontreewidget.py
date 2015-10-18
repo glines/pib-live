@@ -49,6 +49,11 @@ class OptionTreeWidget(urwid.TreeWidget):
               widget], dividechars=1)
         return widget
 
+#    def render(self, size, focus=False):
+#        canvas = urwid.TreeWidget.render(self, size, focus=focus)
+#        canvas = CompositeCanvas(canvas)
+#        canvas.fill_attr_apply()
+
     def keypress(self, size, key):
         # TODO: Make the entire line selectable
         # TODO: Return key to show node details (as in Linux's menuconfig)

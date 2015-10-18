@@ -28,4 +28,5 @@ class GitRemoteNode(urwid.ParentNode):
         branch = self._remote.refs[key]
         child_depth = self.get_depth() + 1
         # FIXME: We should probably be making "ref" nodes instead of "branches"...
-        return gitbranchnode.GitBranchNode(branch, parent=self, key=key, depth=child_depth)
+        child_node = gitbranchnode.GitBranchNode(branch, parent=self, key=key, depth=child_depth)
+        return urwid.AttrWrap(child_node, 'tree_item', focus_attr='focus')

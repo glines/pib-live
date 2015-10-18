@@ -45,8 +45,10 @@ in
         # We probably just booted, so we need to wait a bit for the network
         echo "Waiting for the network..."
         sleep 10 &&
-        mkdir repos
+        mkdir repos &&
+        echo "Extracting mesa repository..." &&
         tar xzf /iso/mesa.tar.gz -C repos/ &&
+        echo "Extracting piglit repository..." &&
         tar xzf /iso/piglit.tar.gz -C repos/ &&
         ./piab/tui/piab-tui.py
 #        mkdir piab-build && cd piab-build &&
@@ -54,7 +56,7 @@ in
       '';
     in
     ''
-        ${pkgs.xterm}/bin/xterm -fn 10x20 -bg black -fg white -hold -e 'sh ${start_piab}' &
+        ${pkgs.xterm}/bin/xterm -fn 10x20 -bg black -fg LightGray -hold -e 'sh ${start_piab}' &
         waitPID=$!
     '';
 
@@ -73,6 +75,31 @@ in
   in stringAfter [ "users" ]
   ''
     ln -s ${piab} /root/piab
+  '';
+
+  system.activationScripts.xtermColors = let
+    xdefaults = builtins.toFile "Xdefaults" ''
+      # tango color scheme (because the default xterm colors are ugly)
+      xterm*color0: #1e1e1e
+      xterm*color1: #cc0000
+      xterm*color2: #4e9a06
+      xterm*color3: #c4a000
+      xterm*color4: #3465a4
+      xterm*color5: #75507b
+      xterm*color6: #0b939b
+      xterm*color7: #d3d7cf
+      xterm*color8: #555753
+      xterm*color9: #ef2929
+      xterm*color10: #8ae234
+      xterm*color11: #fce94f
+      xterm*color12: #729fcf
+      xterm*color13: #ad7fa8
+      xterm*color14: #00f5e9
+      xterm*color15: #eeeeec
+    '';
+  in stringAfter [ "users" ]
+  ''
+    ln -s ${xdefaults} /root/.Xdefaults
   '';
 
   # Add some git repositories to the livecd to reduce the burden on the servers

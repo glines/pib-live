@@ -30,4 +30,5 @@ class GitRepoNode(urwid.ParentNode):
     def load_child_node(self, key):
         remote = self._repo.remote(name=key)
         child_depth = self.get_depth() + 1
-        return gitremotenode.GitRemoteNode(remote, parent=self, key=key, depth=child_depth)
+        child_node = gitremotenode.GitRemoteNode(remote, parent=self, key=key, depth=child_depth)
+        return urwid.AttrWrap(child_node, 'tree_item', focus_attr='focus')
