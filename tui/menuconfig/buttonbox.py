@@ -1,0 +1,78 @@
+import urwid
+
+from menuconfig.motif import MotifLineBox
+
+# TODO: Need a buttonbox class that will consume left/right events and pass
+# down up/down events, but not stop drawing the buttons as in focus.
+class ButtonBox(urwid.WidgetWrap):
+    def __init__(self):
+        # TODO: Make the list of buttons more flexible
+        # Add <Select>, <Details>, <Start>, and <Exit> buttons to the bottom
+        def make_button(name):
+            result = ButtonBoxButton(name)
+            return result
+        self._buttons = []
+        self._buttons.append(make_button(u'Select'))
+        self._buttons.append(make_button(u'Details'))
+        self._buttons.append(make_button(u'Back'))
+        self._button_box = urwid.Columns(self._buttons,
+            dividechars=3, min_width=(8))
+        self._button_box = urwid.Padding(self._button_box,
+            align='center', width=55)
+        self._button_box = MotifLineBox(self._button_box)
+
+        urwid.WidgetWrap.__init__(self, self._button_box)
+
+    def _get_buttons(self):
+        return self._buttons
+
+    buttons = property(_get_buttons)
+
+    def keypress(self, size, key):
+        if key in ('left'):
+            self._decrement_pseudo_focus()
+            return None
+        elif key in ('right'):
+            self._increment_pseudo_focus()
+        return key
+
+    def _find_pseudo_focus(self):
+        for i in range(len(self.buttons)):
+            if self.buttons[i].pseudo_focus:
+                return i
+        return None
+
+    def _increment_pseudo_focus(self):
+        current_index = self._find_pseudo_focus()
+        next_index = (current_index + 1) % len(self.buttons)
+        self.buttons[current_index].pseudo_focus = False
+        self.buttons[current_index]._invalidate()
+        self.buttons[next_index].pseudo_focus = True
+        self.buttons[next_index]._invalidate()
+
+    def _decrement_pseudo_focus(self):
+        current_index = self._find_pseudo_focus()
+        next_index = (current_index - 1) % len(self.buttons)
+        self.buttons[current_index].pseudo_focus = False
+        self.buttons[current_index]._invalidate()
+        self.buttons[next_index].pseudo_focus = True
+        self.buttons[next_index]._invalidate()
+
+class ButtonBoxButton(urwid.WidgetWrap):
+    def __init__(self, label):
+        self._button = urwid.Button(label)
+        self._button = urwid.AttrMap(self._button, 'button', focus_map='button_focus')
+
+        self._pseudo_focus = False
+
+        urwid.WidgetWrap.__init__(self, self._button)
+
+    def _get_pseudo_focus(self):
+        return self._pseudo_focus
+    def _set_pseudo_focus(self, focus):
+        self._pseudo_focus = focus
+
+    pseudo_focus = property(_get_pseudo_focus, _set_pseudo_focus)
+
+    def render(self, size, focus):
+        return urwid.WidgetWrap.render(self, size, self.pseudo_focus)
