@@ -4,6 +4,7 @@ package = @PACKAGE_NAME@
 version = @PACKAGE_VERSION@
 tarname = @PACKAGE_TARNAME@
 distdir = $(tarname)-$(version)
+nixpkgs = @nixpkgs@
 
 # VPATH variables for building outside of the source tree
 srcdir = @srcdir@
@@ -14,7 +15,7 @@ PIAB_DIR:=$(shell dirname $(ROOT_DIR))
 
 .PHONY: livecd
 livecd: piab.nix update_repos
-	nix-build -E --show-trace '(import $(srcdir)/../nixpkgs/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
+	nix-build -E --show-trace '(import $(nixpkgs)/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
 	ln -fs $$(cat ./result/nix-support/hydra-build-products | awk '{print $$NF}') ./piab-live.iso
 
 .PHONY: piab.nix

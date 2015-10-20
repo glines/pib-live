@@ -39,9 +39,11 @@ $(distdir): CLEAN_DIST
 	cp $(srcdir)/livecd/piab.nix.template $(distdir)/livecd/
 	mkdir -p $(distdir)/livecd/repos
 	cp $(srcdir)/livecd/repos/Makefile.in $(distdir)/livecd/repos/
-	cp -R $(srcdir)/nixpkgs $(distdir)/  # FIXME: We should fetch this from GitHub
+#	cp -R $(srcdir)/nixpkgs $(distdir)/  # FIXME: We should fetch this from GitHub
 	mkdir -p $(distdir)/tui
 	cp -R $(srcdir)/tui/*.py $(distdir)/tui/
+	mkdir -p $(distdir)/tui/menuconfig
+	cp -R $(srcdir)/tui/menuconfig/*.py $(distdir)/tui/menuconfig/
 
 .PHONY: CLEAN_DIST
 CLEAN_DIST:

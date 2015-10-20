@@ -11,7 +11,7 @@ let
   tarball_name = "@PACKAGE_NAME@-@PACKAGE_VERSION@";
 in
 {
-  imports = [ @srcdir@/../nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
+  imports = [ @nixpkgs@/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
 
   # Provide wicd for easy wireless configuration.
   #networking.wicd.enable = true;
