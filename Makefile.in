@@ -40,10 +40,11 @@ $(distdir): CLEAN_DIST
 	mkdir -p $(distdir)/livecd/repos
 	cp $(srcdir)/livecd/repos/Makefile.in $(distdir)/livecd/repos/
 #	cp -R $(srcdir)/nixpkgs $(distdir)/  # FIXME: We should fetch this from GitHub
-	mkdir -p $(distdir)/tui
-	cp -R $(srcdir)/tui/*.py $(distdir)/tui/
-	mkdir -p $(distdir)/tui/menuconfig
-	cp -R $(srcdir)/tui/menuconfig/*.py $(distdir)/tui/menuconfig/
+	cp $(srcdir)/piab-tui.py $(distdir)/
+	mkdir -p $(distdir)/piab
+	cp -R $(srcdir)/piab/*.py $(distdir)/piab/
+	mkdir -p $(distdir)/piab/menuconfig
+	cp -R $(srcdir)/piab/menuconfig/*.py $(distdir)/piab/menuconfig/
 
 .PHONY: CLEAN_DIST
 CLEAN_DIST:

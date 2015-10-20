@@ -1,5 +1,8 @@
 import urwid
 
+class OptionTreeWidgetError(RuntimeError):
+    pass
+
 class OptionTreeWidget(urwid.TreeWidget):
     """ This class implements a tree of options styled after
         Linux's venerable menuconfig
@@ -49,10 +52,14 @@ class OptionTreeWidget(urwid.TreeWidget):
               widget], dividechars=1)
         return widget
 
-#    def render(self, size, focus=False):
-#        canvas = urwid.TreeWidget.render(self, size, focus=focus)
-#        canvas = CompositeCanvas(canvas)
-#        canvas.fill_attr_apply()
+    def render(self, size, focus=False):
+        canvas = urwid.TreeWidget.render(self, size, focus=focus)
+        canvas = urwid.CompositeCanvas(canvas)
+        attr_map = {None: 'tree_item'}
+        if focus:
+            attr_map = {None: 'focus'}
+        canvas.fill_attr_apply(attr_map)
+        return canvas
 
     def keypress(self, size, key):
         # TODO: Make the entire line selectable
@@ -71,3 +78,11 @@ class OptionTreeWidget(urwid.TreeWidget):
             self.toggle_expanded()
             return True
         return False
+
+    def get_buttons(self):
+        ''' Get the buttons associated with this option.
+
+            Each option has its own buttons associated with it (e.g. Select,
+            Details) with callbacks that affect this option.
+        '''
+        raise OptionTreeWidgetError('Virtual function; implement in subclass.')

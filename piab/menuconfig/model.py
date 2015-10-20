@@ -1,6 +1,12 @@
-class MenuItem:
+import urwid
+
+class MenuItem(urwid.ParentNode):
     def __init__(self):
         self._children = []
+
+    def load_child_keys(self):
+        value = self.get_value()
+        return 
 
 class SubmenuItem(MenuItem):
     def __init__(self):

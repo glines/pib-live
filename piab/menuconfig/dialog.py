@@ -1,13 +1,14 @@
 import urwid
 
-from menuconfig.buttonbox import ButtonBox
-from menuconfig.motif import MotifLineBox
+from piab.menuconfig.buttonbox import ButtonBox
+from piab.menuconfig.motif import MotifLineBox
 
 # This file implements a dialog box in the style of Linux's menuconfig
 class MenuconfigDialog(urwid.WidgetWrap):
-    def __init__(self, hint=None):  # TODO: Pass a root MenuItem as the "model"
+    def __init__(self, root_menu_item, hint=None):  # TODO: Pass a root MenuItem as the "model"
         # TODO: Build a Menuconfig widget tree from the given menu item tree "model"
-
+        self._root_menu_item = root_menu_item
+#        self._menu = MenuconfigMenu(root_menu_item)
 
         # Provide a hint at the top of the screen (as in Linux's menuconfig)
         if hint == None:

@@ -1,6 +1,6 @@
 import urwid
 
-from menuconfig.motif import MotifLineBox
+from piab.menuconfig.motif import MotifLineBox
 
 # TODO: Need a buttonbox class that will consume left/right events and pass
 # down up/down events, but not stop drawing the buttons as in focus.
