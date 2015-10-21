@@ -50,7 +50,7 @@ in
         tar xzf /iso/mesa.tar.gz -C repos/ &&
         echo "Extracting piglit repository..." &&
         tar xzf /iso/piglit.tar.gz -C repos/ &&
-        ./piab/tui/piab-tui.py
+        ./piab/piab-tui.py
 #        mkdir piab-build && cd piab-build &&
 #        ../piab/configure && /usr/bin/env make tests
       '';

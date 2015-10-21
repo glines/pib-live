@@ -2,6 +2,10 @@ from git import Repo
 import urwid
 
 import gitreponode
+from piab.menuconfig.subtreewalker import SubtreeWalker
+
+import copy
+import pprint
 
 class GitRepoBrowser:
     _header_text = u'Press <space> to select or de-select a build. Press <return> to enter submenus --->. Legend: <+> some builds selected  <*> all builds selected'
@@ -10,7 +14,8 @@ class GitRepoBrowser:
         self._repo_path = repo_path
         self._root_node = gitreponode.GitRepoNode(self._repo_path)
         self._root_node = urwid.AttrWrap(self._root_node, 'tree_item', focus_attr='focus')
-        self._tree = urwid.TreeListBox(urwid.TreeWalker(self._root_node))
+        keys = self._root_node.load_child_keys()
+        self._tree = urwid.TreeListBox(SubtreeWalker(self._root_node.load_child_node('airlied').get_child_node(5)))
         self._header = urwid.Text(self._header_text)
 #        self._header = urwid.Filler(self._header, height='flow', top=0, bottom=1)
         self._header = urwid.Padding(self._header, left=0, right=0)

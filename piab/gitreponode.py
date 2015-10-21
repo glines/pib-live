@@ -25,7 +25,9 @@ class GitRepoNode(urwid.ParentNode):
 
     def load_child_keys(self):
         # Return a list of the names of remotes in this repository
-        return map(lambda remote: remote.name, self._repo.remotes)
+        remotes = map(lambda remote: remote.name, self._repo.remotes)
+#        raise Exception(remotes)
+        return remotes
 
     def load_child_node(self, key):
         remote = self._repo.remote(name=key)

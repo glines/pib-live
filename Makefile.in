@@ -43,6 +43,8 @@ $(distdir): CLEAN_DIST
 	cp $(srcdir)/piab-tui.py $(distdir)/
 	mkdir -p $(distdir)/piab
 	cp -R $(srcdir)/piab/*.py $(distdir)/piab/
+	mkdir -p $(distdir)/piab/gitmenu
+	cp -R $(srcdir)/piab/gitmenu/*.py $(distdir)/piab/gitmenu/
 	mkdir -p $(distdir)/piab/menuconfig
 	cp -R $(srcdir)/piab/menuconfig/*.py $(distdir)/piab/menuconfig/
 
