@@ -4,6 +4,7 @@ package = @PACKAGE_NAME@
 version = @PACKAGE_VERSION@
 tarname = @PACKAGE_TARNAME@
 distdir = $(tarname)-$(version)
+nixpkgs = @nixpkgs@
 
 # VPATH variables for building outside of the source tree
 srcdir = @srcdir@
@@ -12,6 +13,7 @@ VPATH = @srcdir@
 repos = mesa piglit
 repo_tarballs = $(patsubst %,%.tar.gz,$(repos))
 repo_updates = $(patsubst %,%_update,$(repos))
+repo_remotes = $(patsubst %,%_remotes.txt,$(repos))
 
 repos: $(repo_tarballs)
 
@@ -22,9 +24,9 @@ $(repos):
 
 .PHONY: $(repo_updates)
 .SECONDEXPANSION:
-$(repo_updates): $$(shell echo $$@ | sed 's/_update//')
+$(repo_updates): $$(shell echo $$@ | sed 's/_update//') $$(shell echo $$@ | sed 's/_update/_remotes.txt/')
 	-IFS=$$'\n'; cd $< && \
-	    for remote in $$(cat ../$(srcdir)/$<_remotes.txt); do \
+	    for remote in $$(cat ../$<_remotes.txt); do \
 		name=$$(echo $$remote | cut -d' ' -f1); \
 		url=$$(echo $$remote | cut -d' ' -f2); \
 	        git remote add $$name $$url; done
@@ -34,3 +36,8 @@ $(repo_updates): $$(shell echo $$@ | sed 's/_update//')
 .SECONDEXPANSION:
 $(repo_tarballs): $$(shell basename -s .tar.gz $$@) $$(shell basename -s .tar.gz $$@)_update
 	tar -cvzf $@ $<
+
+.PHONY: $(repo_remotes)
+$(repo_remotes):
+	$$(nix-build -E '(import $(nixpkgs) {}).callPackage $(srcdir)/scrape_remotes.nix {}' --no-out-link)/bin/scrape_remotes.py \
+	    $$(echo $@ | sed 's/_remotes.txt//') > $@

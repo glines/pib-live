@@ -47,6 +47,8 @@ $(distdir): CLEAN_DIST
 	cp -R $(srcdir)/piab/gitmenu/*.py $(distdir)/piab/gitmenu/
 	mkdir -p $(distdir)/piab/menuconfig
 	cp -R $(srcdir)/piab/menuconfig/*.py $(distdir)/piab/menuconfig/
+	mkdir -p $(distdir)/piab/topmenu
+	cp -R $(srcdir)/piab/topmenu/*.py $(distdir)/piab/topmenu/
 
 .PHONY: CLEAN_DIST
 CLEAN_DIST:
@@ -60,6 +62,10 @@ tests:
 .PHONY: livecd
 livecd: $(distdir).tar.gz
 	$(MAKE) -C ./livecd
+
+.PHONY: test-livecd
+test-livecd:
+	$(MAKE) -C ./livecd test
 
 Makefile: Makefile.in config.status
 	./config.status $@

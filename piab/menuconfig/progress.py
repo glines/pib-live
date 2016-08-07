@@ -1,0 +1,2 @@
+class MenuconfigProgress
+    pass

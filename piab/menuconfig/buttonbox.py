@@ -67,6 +67,8 @@ class ButtonBox(urwid.WidgetWrap):
         return None
 
     def _increment_pseudo_focus(self):
+        if len(self.buttons) <= 0:
+            return
         current_index = self._find_pseudo_focus()
         next_index = (current_index + 1) % len(self.buttons)
         self.buttons[current_index].pseudo_focus = False
@@ -75,6 +77,8 @@ class ButtonBox(urwid.WidgetWrap):
         self.buttons[next_index]._invalidate()
 
     def _decrement_pseudo_focus(self):
+        if len(self.buttons) <= 0:
+            return
         current_index = self._find_pseudo_focus()
         next_index = (current_index - 1) % len(self.buttons)
         self.buttons[current_index].pseudo_focus = False

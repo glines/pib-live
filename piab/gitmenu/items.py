@@ -34,7 +34,13 @@ class GitRemoteMenuItem(OptionItem):
 
     def load_child_keys(self):
         # Return a list of the indices of refs in this remote
-        return range(len(self._remote.refs))
+        try:
+            refs = self._remote.refs
+        except AssertionError:
+            # GitPython does not handle remotes without any refs very
+            # gracefully
+            refs = []
+        return range(len(refs))
 
     def load_child_node(self, key):
         ref = self._remote.refs[key]
@@ -48,7 +54,7 @@ class GitRefMenuItem(OptionItem):
         self._ref = ref
 
     def get_display_text(self):
-        return self._ref.name
+        return "{}    {}".format(self._ref.name, self._ref.commit.summary)
 
     def load_child_keys(self):
         return []

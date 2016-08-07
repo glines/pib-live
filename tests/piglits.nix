@@ -7,17 +7,17 @@ let
     lib = lib;
   } // args);
 
-  mesa_arb_shader_subroutine = pkgs.fetchgit {
-    url = "git://people.freedesktop.org/~airlied/mesa";
-    rev = "1c57fff7136eecc33554e600913a8a1f6c96ecc1";
-    sha256 = "5a1a760d217e2aff1549896a65a0a84cd06fa37ec092d989b23284396882c51c";
-  };
+#  mesa_arb_shader_subroutine = pkgs.fetchgit {
+#    url = "git://people.freedesktop.org/~airlied/mesa";
+#    rev = "1c57fff7136eecc33554e600913a8a1f6c96ecc1";
+#    sha256 = "5a1a760d217e2aff1549896a65a0a84cd06fa37ec092d989b23284396882c51c";
+#  };
 
-  mesa_r600g-tess = pkgs.fetchgit {
-    url = "git://people.freedesktop.org/~airlied/mesa";
-    rev = "c045fe0224fecf04f6e27445243fc9787d41dd9c";
-    sha256 = "32458e47f40b43e40bee521dc83543d523ed9dfa57aa035477e0cdd9bacacc6d";
-  };
+#  mesa_r600g-tess = pkgs.fetchgit {
+#    url = "git://people.freedesktop.org/~airlied/mesa";
+#    rev = "c045fe0224fecf04f6e27445243fc9787d41dd9c";
+#    sha256 = "32458e47f40b43e40bee521dc83543d523ed9dfa57aa035477e0cdd9bacacc6d";
+#  };
 
   mesa_nir-cse-hash-v2 = pkgs.fetchgit {
     url = "git://people.freedesktop.org/~cwabbott0/mesa";
@@ -33,7 +33,7 @@ let
 in
 rec {
   piglits.mesa_git = customPiglit { };
-  piglits.mesa_arb_shader_subroutine = customPiglit { mesa_src = mesa_arb_shader_subroutine; };
-  piglits.mesa_r600g-tess = customPiglit { mesa_src = mesa_r600g-tess; };
+#  piglits.mesa_arb_shader_subroutine = customPiglit { mesa_src = mesa_arb_shader_subroutine; };
+#  piglits.mesa_r600g-tess = customPiglit { mesa_src = mesa_r600g-tess; };
   piglits.mesa_nir-cse-hash-v2 = customPiglit { mesa_src = mesa_nir-cse-hash-v2; };
 }

@@ -15,7 +15,7 @@ PIAB_DIR:=$(shell dirname $(ROOT_DIR))
 
 .PHONY: livecd
 livecd: piab.nix update_repos
-	nix-build -E --show-trace '(import $(nixpkgs)/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
+	nix-build -E '(import $(nixpkgs)/nixos/release.nix {}).makeIso { module = ./piab-livecd.nix; type = "graphical"; system = "x86_64-linux"; }' -o result
 	ln -fs $$(cat ./result/nix-support/hydra-build-products | awk '{print $$NF}') ./piab-live.iso
 
 .PHONY: piab.nix
@@ -29,3 +29,7 @@ piab.nix: ../$(distdir).tar.gz
 .PHONY:
 update_repos:
 	$(MAKE) -C ./repos
+
+.PHONY:
+test:
+	qemu-kvm -m 2048 -cdrom piab-live.iso

@@ -6,12 +6,21 @@ class MenuItem(urwid.ParentNode):
     def __init__(self, *args, **kwargs):
         urwid.ParentNode.__init__(self, *args, **kwargs)
 
+    def load_widget(self):
+        return MenuItemWidget(self)
+
+    def is_submenu(self):
+        return False
+
 class SubmenuItem(MenuItem):
     def __init__(self, *args, **kwargs):
         MenuItem.__init__(self, *args, **kwargs)
 
     def load_widget(self):
         return SubmenuItemWidget(self)
+
+    def is_submenu(self):
+        return True
 
 class OptionItem(MenuItem):
     def __init__(self, *args, **kwargs):

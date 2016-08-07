@@ -1,5 +1,5 @@
 {
-	lib, pkgs,
+  lib, pkgs,
 	mesa_src ? false,
   debug ? false
 }:
@@ -20,26 +20,11 @@ let
 		};
 	}));
 in
-# Override the environment that that piglit (and all that piglit depends on) is
-# built with. This seems to work better than simply passing our patched mesa in
-# as an argument.
-(import ../nixpkgs { config.packageOverrides = pkgs: rec {
-	waffle = pkgs.callPackage ../pkgs/waffle/default.nix { };
-
-	mesa_override_env = (import ../nixpkgs { config.packageOverrides = pkgs: rec {
-		# Inside here, we create an environment in which we override mesa and
-		# some of the packages that Mesa depends on.
-		mesa_noglu = lib.makeOverridable (args: lib.overrideDerivation pkgs.mesa_noglu (attrs: rec {
+lib.makeOverridable (args: lib.overrideDerivation pkgs.mesa_noglu (attrs: rec {
 			name = "mesa-noglu-${version}";
 			version = "git";
 
 			enableParallelBuilding = true;
 			src = _mesa_src;
 			nativeBuildInputs = [ pkgs.pythonPackages.Mako ] ++ attrs.nativeBuildInputs;
-		})) {};
-		libdrm = libdrm_2_4_65 pkgs;
-				
-	};});
-	mesa = mesa_override_env.mesa;
-	mesa_drivers = mesa_override_env.mesa_drivers;
-};}).callPackage ../pkgs/piglit/default.nix {}
+		}));

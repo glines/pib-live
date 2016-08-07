@@ -83,3 +83,12 @@ class MotifLineBox(LineBox):
 
         WidgetDecoration.__init__(self, original_widget)
         WidgetWrap.__init__(self, pile)
+    def set_original_widget(self, widget):
+        # We have to replace the 2nd widget in the Pile and the 2nd widget in
+        # the Columns that makes up the box. It's just like center square in
+        # Hollywood Squares...
+        contents_pile = self._w.contents
+        center_columns = contents_pile[1][0]
+        contents_columns = center_columns.contents
+        contents_columns[1] = (widget, ('weight', 1, False))
+        center_columns.contents = contents_columns

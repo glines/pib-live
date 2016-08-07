@@ -8,14 +8,14 @@ class MenuItemWidget(urwid.TreeWidget):
         urwid.TreeWidget.__init__(self, *args, **kwargs)
         self.expanded = False
 
-    def render(self, size, focus=False):
-        canvas = urwid.TreeWidget.render(self, size, focus=focus)
-        canvas = urwid.CompositeCanvas(canvas)
-        attr_map = {None: 'tree_item'}
-        if focus:
-            attr_map = {None: 'focus'}
-        canvas.fill_attr_apply(attr_map)
-        return canvas
+#    def render(self, size, focus=False):
+#        canvas = urwid.TreeWidget.render(self, size, focus=focus)
+#        canvas = urwid.CompositeCanvas(canvas)
+#        attr_map = {None: 'tree_item'}
+#        if focus:
+#            attr_map = {None: 'focus'}
+#        canvas.fill_attr_apply(attr_map)
+#        return canvas
 
     def get_display_text(self):
         return self.get_node().get_display_text()
@@ -27,13 +27,21 @@ class SubmenuItemWidget(MenuItemWidget):
         widget = self.get_inner_widget()
         # Add the ---> to the end
         widget = urwid.Columns([
-              widget,
+              ('pack', widget),
               ('fixed', 4, self._right_arrow),
             ], dividechars=2)
         # Apply the indentation
         indent_cols = self.get_indent_cols()
         widget = urwid.Padding(widget, width=('relative', 100), left=indent_cols)
+        widget = urwid.AttrWrap(widget, 'tree_item', focus_attr='focus')
         return widget
+
+    def get_actions(self):
+        actions = []
+        node = self.get_node()
+        if len(node.get_child_keys()) > 0:
+            actions.append(('Enter', lambda x: x))
+        return actions
 
 class OptionItemWidget(MenuItemWidget):
     def __init__(self, *args, **kwargs):
@@ -50,6 +58,7 @@ class OptionItemWidget(MenuItemWidget):
         widget = urwid.Columns([
               ('fixed', 3, self._get_checkbox()),
               widget], dividechars=1)
+        widget = urwid.AttrWrap(widget, 'tree_item', focus_attr='focus')
         return widget
 
     def _get_checkbox(self):
@@ -75,9 +84,12 @@ class OptionItemWidget(MenuItemWidget):
         self._update_checkbox()
 
     def get_actions(self):
-        return [
-          ('Select', self.toggle_selected)
-        ]
+        actions = []
+        actions.append(('Select', self.toggle_selected))
+        node = self.get_node()
+        if len(node.get_child_keys()) > 0:
+            actions.append(('Select All', lambda x: x))
+        return actions
 
 class LabelItemWidget(MenuItemWidget):
     def get_indented_widget(self):

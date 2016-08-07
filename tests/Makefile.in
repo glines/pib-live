@@ -9,7 +9,7 @@ distdir = $(tarname)-$(version)
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-piglits = mesa_arb_shader_subroutine mesa_r600g-tess mesa_nir-cse-hash-v2
+piglits = mesa_nir-cse-hash-v2
 piglit_builds = $(patsubst %,piglits/%,$(piglits))
 piglit_results = $(patsubst %,results/%,$(piglits))
 

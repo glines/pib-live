@@ -10,6 +10,7 @@ import piab.gitmenu
 import piab.gitrepobrowser
 import piab.menuconfig
 import piab.piglittestbrowser
+import piab.topmenu
 
 def top_menu():
     body = [urwid.Text(u'PIAB Top Menu'), urwid.Divider()]
@@ -50,9 +51,11 @@ def top_menu_item_chosen(button, item):
 
 def recommended_piglit_tests():
     # XXX
+#    mc = piab.menuconfig.MenuconfigDialog(
+#        piab.gitmenu.GitRepoMenuItem(
+#            os.path.expanduser('~/repos/mesa')))
     mc = piab.menuconfig.MenuconfigDialog(
-        piab.gitmenu.GitRepoMenuItem(
-            os.path.expanduser('~/repos/mesa')))
+        piab.topmenu.PiabTopMenu())
     main.original_widget = mc
 
 def select_piglit_tests():
