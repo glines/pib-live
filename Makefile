@@ -2,7 +2,7 @@ all: result
 
 .PHONY: result
 result:
-	nix-build ./default.nix
+	nix-build ./default.nix --show-trace
 
 .PHONY: test
 test: result

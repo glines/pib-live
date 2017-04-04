@@ -58,7 +58,8 @@ in
 #        tar xzf /iso/mesa.tar.gz -C repos/ &&
 #        echo "Extracting piglit repository..." &&
 #        tar xzf /iso/piglit.tar.gz -C repos/ &&
-        ./pib-tui/pib-tui.py
+        bash
+#        ./pib-tui/pib-tui.py
 #        mkdir piab-build && cd piab-build &&
 #        ../piab/configure && /usr/bin/env make tests
       '';
@@ -121,6 +122,29 @@ in
   # un-archived to the iso, but the interface isoImage.contents
   # provides makes this difficult.
   isoImage.contents =
+    let
+      directoryToContents =
+        { directory, target }:
+        lib.mapAttrsToList
+          (name: value: {
+            source = "${directory}/${name}";
+            target = "${target}/${name}"; }
+          )
+          (lib.filterAttrs
+            (name: value: value == "regular")
+            (builtins.readDir directory))
+        ++ lib.flatten (
+            map
+              directoryToContents
+              (lib.mapAttrsToList
+                (name: value: {
+                  directory = "${directory}/${name}";
+                  target = "${target}/${name}"; }
+                )
+                (lib.filterAttrs
+                  (name: value: value == "directory")
+                  (builtins.readDir directory))));
+    in
     [
     /*
       { source = "@abs_builddir@/repos/mesa.tar.gz";
@@ -130,7 +154,21 @@ in
         target = "/piglit.tar.gz";
       }
       */
-    ];
+    ] ++
+    lib.flatten (
+      map
+        directoryToContents
+        [
+          {
+            directory = ./pib-tui;
+            target = "/pib-tui";
+          }
+          {
+            directory = "${pkgs.bash}";
+            target = "/bash";
+          }
+        ]
+    );
 
 #  system.activationScripts.installerDesktop = let
 #    openManual = pkgs.writeScript "nixos-manual.sh" ''
