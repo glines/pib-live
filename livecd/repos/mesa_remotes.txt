@@ -1,3 +1,0 @@
-mesa git://anongit.freedesktop.org/git/mesa/mesa
-airlied git://people.freedesktop.org/~airlied/mesa
-cwabbott0 git://people.freedesktop.org/~cwabbott0/mesa

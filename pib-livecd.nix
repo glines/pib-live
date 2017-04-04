@@ -5,13 +5,21 @@
 
 with lib;
 
-with import ./../tests/piglits.nix { inherit lib; inherit pkgs; };
+# XXX: These are specific piglits that are being built (for no good
+# reason other than to make sure they build?)
+#with import @srcdir@/../tests/piglits.nix { inherit lib; inherit pkgs; };
 
 let
-  tarball_name = "piab-0.0.1";
+# XXX: The tarball, which used to be built by autotools as its dist
+# tarball, will be replaced by a nix derivation (which may use
+# autotools internally, although I probably won't bother) that gathers
+# the latest git checkout from mesa.
+#  tarball_name = "@PACKAGE_NAME@-@PACKAGE_VERSION@";
 in
 {
-  imports = [ /home/auntieneo/code/piab/nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix ];
+  /* XXX: I'm not sure if this import will actually work... */
+  /* XXX: Don't use an absolute path here for the import */
+  imports = [ "/home/auntieneo/code/piab/nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-base.nix" ];
 
   # Provide wicd for easy wireless configuration.
   #networking.wicd.enable = true;
@@ -46,17 +54,19 @@ in
         echo "Waiting for the network..."
         sleep 10 &&
         mkdir repos &&
-        echo "Extracting mesa repository..." &&
-        tar xzf /iso/mesa.tar.gz -C repos/ &&
-        echo "Extracting piglit repository..." &&
-        tar xzf /iso/piglit.tar.gz -C repos/ &&
-        ./piab/piab-tui.py
+#        echo "Extracting mesa repository..." &&
+#        tar xzf /iso/mesa.tar.gz -C repos/ &&
+#        echo "Extracting piglit repository..." &&
+#        tar xzf /iso/piglit.tar.gz -C repos/ &&
+        ./pib-tui/pib-tui.py
 #        mkdir piab-build && cd piab-build &&
 #        ../piab/configure && /usr/bin/env make tests
       '';
     in
     ''
-        ${pkgs.xterm}/bin/xterm -fn 10x20 -bg black -fg LightGray -hold -e 'sh ${start_piab}' &
+        ${pkgs.xterm}/bin/xterm \
+            -fn 10x20 -bg black -fg LightGray \
+            -hold -e 'sh ${start_piab}' &
         waitPID=$!
     '';
 
@@ -70,11 +80,13 @@ in
     };
   };
 
-  system.activationScripts.includePIAB = let
-    piab = pkgs.callPackage ./piab.nix { };
+  system.activationScripts.includePIB = let
+    pib-tui = pkgs.callPackage ./pib-tui.nix { };
   in stringAfter [ "users" ]
   ''
-    ln -s ${piab} /root/piab
+    # XXX: This symlink provides access to the pib nix code such that
+    # the PIB TUI can later build its own piglits.
+    ln -s ${pib-tui} /root/pib-tui
   '';
 
   system.activationScripts.xtermColors = let
@@ -102,15 +114,22 @@ in
     ln -s ${xdefaults} /root/.Xdefaults
   '';
 
-  # Add some git repositories to the livecd to reduce the burden on the servers
+  # Add some git repositories to the livecd to reduce the burden on
+  # the servers
+  # FIXME: These tarballs use up a lot of space in livecd RAM after
+  # being extracted. It would be much better to add these repositories
+  # un-archived to the iso, but the interface isoImage.contents
+  # provides makes this difficult.
   isoImage.contents =
     [
-      { source = "/home/auntieneo/code/piab/livecd/repos/mesa.tar.gz";
+    /*
+      { source = "@abs_builddir@/repos/mesa.tar.gz";
         target = "/mesa.tar.gz";
       }
-      { source = "/home/auntieneo/code/piab/livecd/repos/piglit.tar.gz";
+      { source = "@abs_builddir@/repos/piglit.tar.gz";
         target = "/piglit.tar.gz";
       }
+      */
     ];
 
 #  system.activationScripts.installerDesktop = let
@@ -135,6 +154,4 @@ in
 #    ln -sfT ${pkgs.kde4.konsole}/share/applications/kde4/konsole.desktop /root/Desktop/konsole.desktop
 #    ln -sfT ${pkgs.gparted}/share/applications/gparted.desktop /root/Desktop/gparted.desktop
 #  '';
-
-
 }

@@ -1,5 +1,8 @@
-.*.swp
-
+# Build files
 /build
 /configure
 /autom4te.cache
+/result
+
+# VIM files
+.*.swp
